@@ -10,14 +10,26 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+use App\Boards;
+use Illuminate\Contracts\Support\Jsonable;
 
 Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
 
-Route::get('/first','firstController@index');
+get('/boards','BoardsController@index');
 
-Route::get('/first/about','firstController@about');
+get('/boards/{id}','BoardsController@info');
+
+Route::get('csrf', function() {
+    return Session::token();
+});
+
+post('/boards/write','BoardsController@writeDocument');
+
+put('/boards/{id}','BoardsController@updateDocument');
+
+delete('/boards/{id}','BoardsController@deleteDocument');
 
 Route::controllers([
     'auth' => 'Auth\AuthController',
