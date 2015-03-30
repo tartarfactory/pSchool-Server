@@ -11,25 +11,29 @@
 |
 */
 use App\Boards;
+use App\Studies;
 use Illuminate\Contracts\Support\Jsonable;
-
-Route::get('/', 'WelcomeController@index');
-
-Route::get('home', 'HomeController@index');
-
-get('/boards','BoardsController@index');
-
-get('/boards/{id}','BoardsController@info');
 
 Route::get('csrf', function() {
     return Session::token();
 });
 
-post('/boards/write','BoardsController@writeDocument');
+Route::group(['prefix' => 'studies'], function()
+{
 
-put('/boards/{id}','BoardsController@updateDocument');
+    get('','StudiesController@findMultiResult');
 
-delete('/boards/{id}','BoardsController@deleteDocument');
+    get('/{id}','StudiesController@findSingleResult');
+
+    post('','StudiesController@inputStudy');
+
+    delete('/{id}','StudiesController@deleteStudy');
+
+    put('/{id}','StudiesController@modificationStudy');
+
+});
+
+
 
 Route::controllers([
     'auth' => 'Auth\AuthController',
