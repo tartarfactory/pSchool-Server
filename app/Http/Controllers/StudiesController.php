@@ -6,19 +6,22 @@ use App\Studies;
 use DB;
 use Illuminate\Support\Facades\Input;
 use App\Library\uuid;
+use App\Library\query;
 use Illuminate\Http\Request;
 
 class StudiesController extends Controller {
 
 
     public function findMultiResult (Studies $studies) {
-        $multiResult = $studies->select(DB::raw('hex(id) as id'),'name','created_at','updated_at')->get();
-        return $multiResult;
+        $multiResult = $studies->select(DB::raw('hex(id) as id'),'name','created_at','updated_at');
+        $multiResult = query::redefinitionQuery($multiResult,$_GET);
+        return $multiResult->get();
     }
 
     public function findSingleResult(Studies $studies, $id) {
         $singleResult = $studies->select(DB::raw('hex(id) as id'),'name','created_at','updated_at')->where(DB::raw('hex(id)'),'=',$id)->get();
-        return $singleResult;
+        if($singleResult == '[]') return 'NotFoundId';
+        else return $singleResult;
     }
 
     public function inputStudy(Studies $studies) {
@@ -32,8 +35,12 @@ class StudiesController extends Controller {
     }
 
     public function deleteStudy(Studies $studies, $id) {
-        $studies->where(DB::raw('hex(id)'),'=',$id)->delete();
-        return 'deletedStudy';
+        $findId = StudiesController::findSingleResult($studies,$id);
+        if($findId != 'NotFoundId'){
+            $studies->where(DB::raw('hex(id)'),'=',$id)->delete();
+            return 'deletedStudy';
+        }
+        else return $findId;
     }
 
     public function modificationStudy(Studies $studies, $id) {

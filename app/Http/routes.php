@@ -10,8 +10,6 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-use App\Boards;
-use App\Studies;
 use Illuminate\Contracts\Support\Jsonable;
 
 Route::get('csrf', function() {
